@@ -1,27 +1,40 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Animate on scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    });
+// Sample responses for demo (replace with actual API calls)
+const demoResponses = {
+    "hello": "Hello! How can I help you today?",
+    "help": "I can assist with general inquiries. Try asking about our services!",
+    "default": "I'm a demo chatbot. Connect to GPT API for full functionality!"
+};
 
-    document.querySelectorAll('.content-section').forEach((section) => {
-        section.style.opacity = 0;
-        section.style.transform = 'translateY(20px)';
-        observer.observe(section);
-    });
-
-    // Chatbot interaction
-    const chatbot = document.getElementById('animatedBot');
-    chatbot.addEventListener('mouseover', () => {
-        chatbot.style.transform = 'scale(1.1)';
-    });
+function sendMessage() {
+    const userInput = document.getElementById('userInput');
+    const chatWindow = document.getElementById('chatWindow');
     
-    chatbot.addEventListener('mouseout', () => {
-        chatbot.style.transform = 'scale(1)';
-    });
-});
+    // Add user message
+    const userMessage = document.createElement('div');
+    userMessage.className = 'message user';
+    userMessage.textContent = userInput.value;
+    chatWindow.appendChild(userMessage);
+    
+    // Add typing animation
+    const typingIndicator = document.createElement('div');
+    typingIndicator.className = 'message bot typing';
+    typingIndicator.textContent = '...';
+    chatWindow.appendChild(typingIndicator);
+    
+    // Simulate API call
+    setTimeout(() => {
+        chatWindow.removeChild(typingIndicator);
+        const botResponse = document.createElement('div');
+        botResponse.className = 'message bot';
+        botResponse.textContent = getBotResponse(userInput.value.toLowerCase());
+        chatWindow.appendChild(botResponse);
+    }, 1000);
+    
+    // Scroll to bottom
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    userInput.value = '';
+}
+
+function getBotResponse(input) {
+    return demoResponses[input] || demoResponses['default'];
+}
