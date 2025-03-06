@@ -1,40 +1,77 @@
-// Sample responses for demo (replace with actual API calls)
+// Demo Chatbot Logic
 const demoResponses = {
-    "hello": "Hello! How can I help you today?",
-    "help": "I can assist with general inquiries. Try asking about our services!",
+    "hi": "Hello! How can I assist you today?",
+    "help": "I can answer questions about GPT chatbots!",
+    "github": "Check our GitHub repo: https://github.com/yourusername/chatbot-blog",
     "default": "I'm a demo chatbot. Connect to GPT API for full functionality!"
 };
 
 function sendMessage() {
-    const userInput = document.getElementById('userInput');
+    const inputField = document.getElementById('userInput');
     const chatWindow = document.getElementById('chatWindow');
-    
+    const message = inputField.value.trim();
+
+    if (!message) return;
+
     // Add user message
-    const userMessage = document.createElement('div');
-    userMessage.className = 'message user';
-    userMessage.textContent = userInput.value;
-    chatWindow.appendChild(userMessage);
+    addMessage(message, 'user');
     
     // Add typing animation
-    const typingIndicator = document.createElement('div');
-    typingIndicator.className = 'message bot typing';
-    typingIndicator.textContent = '...';
-    chatWindow.appendChild(typingIndicator);
-    
+    showTypingIndicator();
+
     // Simulate API call
     setTimeout(() => {
-        chatWindow.removeChild(typingIndicator);
-        const botResponse = document.createElement('div');
-        botResponse.className = 'message bot';
-        botResponse.textContent = getBotResponse(userInput.value.toLowerCase());
-        chatWindow.appendChild(botResponse);
+        removeTypingIndicator();
+        const response = getResponse(message.toLowerCase());
+        addMessage(response, 'bot');
     }, 1000);
-    
-    // Scroll to bottom
-    chatWindow.scrollTop = chatWindow.scrollHeight;
-    userInput.value = '';
+
+    inputField.value = '';
 }
 
-function getBotResponse(input) {
-    return demoResponses[input] || demoResponses['default'];
+function addMessage(text, sender) {
+    const chatWindow = document.getElementById('chatWindow');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `${sender}-message message`;
+    messageDiv.textContent = text;
+    chatWindow.appendChild(messageDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
 }
+
+function showTypingIndicator() {
+    const chatWindow = document.getElementById('chatWindow');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'bot-message message typing-indicator';
+    typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+    chatWindow.appendChild(typingDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const typingIndicators = document.getElementsByClassName('typing-indicator');
+    while(typingIndicators.length > 0) {
+        typingIndicators[0].remove();
+    }
+}
+
+function getResponse(input) {
+    return demoResponses[input] || demoResponses.default;
+}
+
+// Optional: Add real GPT API integration
+/*
+async function getRealResponse(input) {
+    const response = await fetch('YOUR_API_ENDPOINT', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer YOUR_API_KEY'
+        },
+        body: JSON.stringify({
+            message: input
+        })
+    });
+    const data = await response.json();
+    return data.reply;
+}
+*/
