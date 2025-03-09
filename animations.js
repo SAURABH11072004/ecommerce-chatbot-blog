@@ -1,24 +1,22 @@
-// animations.js
-document.addEventListener('DOMContentLoaded', () => {
-    // Animate tech cards on scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = 1;
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, { threshold: 0.1 });
+// Function to animate sections when they come into view
+document.addEventListener("DOMContentLoaded", () => {
+    const sections = document.querySelectorAll("section");
 
-    document.querySelectorAll('.tech-card').forEach(card => {
-        card.style.opacity = 0;
-        card.style.transform = 'translateY(20px)';
-        observer.observe(card);
-    });
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target); // Stop observing once animated
+                }
+            });
+        },
+        {
+            threshold: 0.1, // Trigger when 10% of the section is visible
+        }
+    );
 
-    // Pipeline step animations
-    const steps = document.querySelectorAll('.step');
-    steps.forEach((step, index) => {
-        step.style.animationDelay = `${index * 0.5}s`;
+    sections.forEach((section) => {
+        observer.observe(section);
     });
 });
