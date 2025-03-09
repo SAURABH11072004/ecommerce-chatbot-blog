@@ -1,22 +1,48 @@
 // Function to animate sections when they come into view
 document.addEventListener("DOMContentLoaded", () => {
     const sections = document.querySelectorAll("section");
+    const images = document.querySelectorAll("figure img");
 
-    const observer = new IntersectionObserver(
+    // Section animation observer
+    const sectionObserver = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add("visible");
-                    observer.unobserve(entry.target); // Stop observing once animated
+                    // Add a slight delay for staggered effect
+                    setTimeout(() => {
+                        entry.target.classList.add("animated");
+                    }, 200);
+                    sectionObserver.unobserve(entry.target);
                 }
             });
         },
         {
-            threshold: 0.1, // Trigger when 10% of the section is visible
+            threshold: 0.1,
         }
     );
 
     sections.forEach((section) => {
-        observer.observe(section);
+        sectionObserver.observe(section);
+    });
+
+    // Image hover animation observer
+    const imageObserver = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.transition = "transform 0.3s ease, opacity 0.5s ease";
+                    entry.target.classList.add("visible");
+                    imageObserver.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.5,
+        }
+    );
+
+    images.forEach((img) => {
+        imageObserver.observe(img);
     });
 });
